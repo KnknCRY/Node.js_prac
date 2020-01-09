@@ -1,3 +1,12 @@
+const Logger = require('./logger');
+const logger = new Logger();
+
+logger.on('msgLogged', (arg) => {
+    console.log('Listener called', arg)
+});
+
+logger.log('msg');
+
 
 /*path, os, fs
 const path = require('path');
@@ -17,10 +26,4 @@ fs.readdir('./123', function (err, files) {
     if (err) console.log('Error', err);
     else console.log('Result', files)
 });
-*/
-
-/*load module
-const logger = require("./logger.js");
-
-logger.log("hi");
 */

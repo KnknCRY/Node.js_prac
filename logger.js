@@ -1,9 +1,11 @@
-console.log(__filename);
-console.log(__dirname);
+const EventEmitter = require('events');
 
-function log(msg) {
-    console.log(msg);
+class Logger extends EventEmitter {
+    log(msg) {
+        console.log(msg);
+        this.emit('msgLogged', { id: 1, url: 'http://' });
+    }
 }
 
-//module.exports = log;
-module.exports.log = log;
+module.exports = Logger;
+//module.exports.log = log;
