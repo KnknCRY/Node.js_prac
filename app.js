@@ -3,9 +3,9 @@ const logger = new Logger();
 
 logger.on('msgLogged', (arg) => {
     console.log('Listener called', arg)
-});
+});//聽到
 
-logger.log('msg');
+logger.log('msg');//發射
 
 
 /*path, os, fs

@@ -1,11 +1,4 @@
 console.log('Before');
-/*
-getUser(1)
-    .then(user => getRepositories(user.gitHubUsername))
-    .then(repos => getCommits(repos[0]))
-    .then(commits => console.log(commits))
-    .catch(err => console.log('Error:', err.message));
-*/
 
 //Async and Await approach
 async function displayCommits() {

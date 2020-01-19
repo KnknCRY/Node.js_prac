@@ -39,13 +39,6 @@ if(app.get('env')==='development'){
 */
 
 /*
-app.use(function(req,res,next){
-    console.log('Authenticating...');
-    next();
-});
-*/
-
-/*
 app.get('/api/posts/:year/:month', (req, res) => {
     res.send(req.query);
 });
