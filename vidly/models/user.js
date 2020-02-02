@@ -1,30 +1,41 @@
 const Joi = require("joi");
+const jwt = require("jsonwebtoken");
+const config = require("config");
 const mongoose = require("mongoose");
 
-const User = mongoose.model(
-  "User",
-  new mongoose.Schema({
-    name: {
-      type: String,
-      required: true,
-      minlength: 5,
-      maxlength: 50
-    },
-    email: {
-      type: String,
-      unique: true,
-      required: true,
-      minlength: 5,
-      maxlength: 255
-    },
-    password: {
-      type: String,
-      required: true,
-      minlength: 5,
-      maxlength: 1024
-    }
-  })
-);
+const userShema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: true,
+    minlength: 5,
+    maxlength: 50
+  },
+  email: {
+    type: String,
+    unique: true,
+    required: true,
+    minlength: 5,
+    maxlength: 255
+  },
+  password: {
+    type: String,
+    required: true,
+    minlength: 5,
+    maxlength: 1024
+  },
+  isAdmin: Boolean
+});
+
+userShema.methods.generateAuthToken = function() {
+  //設定好payload之後，用環境變數去產生jwt
+  const token = jwt.sign(
+    { _id: this._id, isAdmin: this.isAdmin },
+    config.get("jwtPrivateKey")
+  );
+  return token;
+};
+
+const User = mongoose.model("User", userShema);
 
 function validateUser(user) {
   const schema = {
