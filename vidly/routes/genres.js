@@ -10,6 +10,7 @@ const router = express.Router();
 //這邊把一個function reference丟進去asyncMiddleware
 //並且return一個express route handler
 router.get("/", async (req, res) => {
+  throw new Error("could not get the genres.");
   const genres = await Genre.find().sort("name");
   res.send(genres);
 });

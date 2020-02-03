@@ -1,3 +1,5 @@
+require("express-async-errors"); //一定要在最上面require
+const winston = require("winston");
 const Joi = require("joi");
 Joi.objectId = require("joi-objectid")(Joi);
 const mongoose = require("mongoose");
@@ -10,8 +12,9 @@ const express = require("express");
 const auth = require("./routes/auth");
 const config = require("config");
 const error = require("./middleware/error");
-require("express-async-errors");
 const app = express();
+
+winston.add(winston.transports.File, { filename: "logfile.log" });
 
 //export vidly_jwtPrivateKey=mySecureKeyc
 if (!config.get("jwtPrivateKey")) {
