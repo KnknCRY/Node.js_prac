@@ -15,12 +15,24 @@ const config = require("config");
 const error = require("./middleware/error");
 const app = express();
 
-process.on("uncaughtException", ex => {
-  console.log("We got uncaught exception");
-  winston.error(ex.message, ex);
+//這只能抓到sync的錯誤，讓node不因為錯誤而中止執行
+// process.on("uncaughtException", ex => {
+//   winston.error(ex.message, ex);
+//   process.exit(1);
+// });
+//這邊以winston.handleExceptions取代
+
+winston.handleExceptions(
+  new winston.transports.File({ filename: "uncaoghtException.log" })
+);
+
+process.on("unhandledRejection", ex => {
+  //winston.error(ex.message, ex);
+  //process.exit(1);
+  throw ex; //硬是把Rejection變成Exception他就會直接丟進去winston.handleExceptions
 });
 
-//把錯誤訊息直接印出來到logfile.log，若檔案不存在會自動建立
+//把express的錯誤訊息直接印出來到logfile.log，若檔案不存在會自動建立
 winston.add(winston.transports.File, { filename: "logfile.log" });
 //把錯誤訊息直接存在MongoDB，會自動建立一個log colection
 winston.add(winston.transports.MongoDB, {
@@ -29,6 +41,8 @@ winston.add(winston.transports.MongoDB, {
 });
 
 throw new Error("Something failed during startup.");
+//const p = Promise.reject(new Error("Something failed miserably."));
+//p.then(() => console.log("Done"));
 
 //export vidly_jwtPrivateKey=mySecureKeyc
 if (!config.get("jwtPrivateKey")) {
