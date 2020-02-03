@@ -9,8 +9,11 @@ const users = require("./routes/users");
 const express = require("express");
 const auth = require("./routes/auth");
 const config = require("config");
+const error = require("./middleware/error");
+require("express-async-errors");
 const app = express();
 
+//export vidly_jwtPrivateKey=mySecureKeyc
 if (!config.get("jwtPrivateKey")) {
   console.log("FATAL ERROR : jwtPrivateKey is not defined.");
   process.exit(1);
@@ -28,6 +31,10 @@ app.use("/api/movies", movies);
 app.use("/api/rentals", rentals);
 app.use("/api/users", users);
 app.use("/api/auth", auth);
+
+//error middleware要在所有middleware後面
+//所以我在每個route裡面的api呼叫next就會進來
+app.use(error);
 
 const port = process.env.PORT || 3000;
 app.listen(port, () => console.log(`Listening on port ${port}...`));
