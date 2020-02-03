@@ -3,34 +3,26 @@ const mongoose = require("mongoose");
 const express = require("express");
 const auth = require("../middleware/auth");
 const admin = require("../middleware/admin");
-const asyncMiddleware = require("../middleware/async");
 const router = express.Router();
 
 //一般來說，express會pass這個function reference with 3 parameters
 //並非一個function call
 //這邊把一個function reference丟進去asyncMiddleware
 //並且return一個express route handler
-router.get(
-  "/",
-  asyncMiddleware(async (req, res) => {
-    const genres = await Genre.find().sort("name");
-    res.send(genres);
-  })
-);
+router.get("/", async (req, res) => {
+  const genres = await Genre.find().sort("name");
+  res.send(genres);
+});
 
-router.post(
-  "/",
-  auth,
-  asyncMiddleware(async (req, res) => {
-    const { error } = validate(req.body);
-    if (error) return res.status(400).send(error.details[0].message);
+router.post("/", auth, async (req, res) => {
+  const { error } = validate(req.body);
+  if (error) return res.status(400).send(error.details[0].message);
 
-    let genre = new Genre({ name: req.body.name });
-    genre = await genre.save();
+  let genre = new Genre({ name: req.body.name });
+  genre = await genre.save();
 
-    res.send(genre);
-  })
-);
+  res.send(genre);
+});
 
 router.put("/:id", async (req, res) => {
   const { error } = validate(req.body);
